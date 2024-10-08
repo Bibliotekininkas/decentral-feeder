@@ -5,6 +5,7 @@ import (
 	"os"
 	"time"
 
+	kwilhelper "github.com/diadata-org/decentral-feeder/pkg/helpers/kwil"
 	"github.com/kwilteam/kwil-db/core/client"
 	klog "github.com/kwilteam/kwil-db/core/log"
 	ctypes "github.com/kwilteam/kwil-db/core/types/client"
@@ -19,7 +20,7 @@ func GetKwilClient(chainID string, provider string) *client.Client {
 		log.Fatal("Private key not found in environment variables")
 	}
 	ctx := context.Background()
-	signer := makeEthSigner(privKey)
+	signer := kwilhelper.MakeEthSigner(privKey)
 
 	opts := &ctypes.Options{
 		Logger:  klog.NewStdOut(klog.InfoLevel),
@@ -79,7 +80,7 @@ func DeployDatabase(cl *client.Client, dbName string, dbSchema string) (string, 
 		ctxWithTimeout, cancel := context.WithTimeout(ctx, 30*time.Second)
 		defer cancel()
 
-		checkTx(cl, ctxWithTimeout, txHash, "deploy database")
+		kwilhelper.CheckTx(cl, ctxWithTimeout, txHash, "deploy database")
 	}
 
 	return dbID, false, nil
